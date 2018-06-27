@@ -1,0 +1,19 @@
+Configure miss: ggrep
+Configure miss: gegrep
+Configure miss: gobjcopy
+Configure miss: gobjdump
+Configure miss: greadelf
+Configure miss: gpatch
+Configure miss: GNU autoconf >= 2.65
+Configure miss: GNU automake >= 1.15
+Configure miss: cvs
+Configure miss: svn
+Configure miss: gmd5sum
+Configure miss: gsha1sum
+Configure miss: gsha256sum
+Configure miss: gsha512sum
+Configure miss: working ncursesw/curses.h
+Configure miss: working ncursesw.h
+Configure miss: Curses Panel library with ncursesw/panel.h
+Configure miss: Curses Menu library with ncursesw/menu.h
+Configure miss: if the manual needs to be installed

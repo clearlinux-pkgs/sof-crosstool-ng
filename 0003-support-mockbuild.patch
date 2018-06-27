@@ -1,0 +1,165 @@
+From 41a8b35ff8ffa1e73fd5f16df4151d4dc09f2f0a Mon Sep 17 00:00:00 2001
+From: Bin Yang <byang@intel.com>
+Date: Wed, 27 Jun 2018 06:34:25 +0000
+Subject: [PATCH 3/3] support mockbuild
+
+Signed-off-by: Bin Yang <bin.yang@intel.com>
+Signed-off-by: Wang, Long <long1.wang@linux.intel.com>
+---
+ ct-ng.in                        |  4 ----
+ mockbuild/Makefile              | 39 +++++++++++++++++++++++++++++++++
+ mockbuild/configure             |  7 ++++++
+ scripts/build/companion_libs.sh | 10 ++++-----
+ scripts/crosstool-NG.sh         | 16 +++++++-------
+ 5 files changed, 58 insertions(+), 18 deletions(-)
+ create mode 100755 mockbuild/Makefile
+ create mode 100755 mockbuild/configure
+
+diff --git a/ct-ng.in b/ct-ng.in
+index 5a5bb33..e4b451f 100644
+--- a/ct-ng.in
++++ b/ct-ng.in
+@@ -240,10 +240,8 @@ build.%:
+ # Please keep the last line with a '\' and keep the following empty line:
+ # it helps when diffing and merging.
+ CT_STEPS := \
+-            companion_tools_for_build  \
+             companion_libs_for_build   \
+             binutils_for_build         \
+-            companion_tools_for_host   \
+             companion_libs_for_host    \
+             binutils_for_host          \
+             cc_core_pass_1             \
+@@ -256,8 +254,6 @@ CT_STEPS := \
+             libc_post_cc               \
+             companion_libs_for_target  \
+             binutils_for_target        \
+-            debug                      \
+-            test_suite                 \
+             finish                     \
+ 
+ # Keep an empty line above this comment, so the last
+diff --git a/mockbuild/Makefile b/mockbuild/Makefile
+new file mode 100755
+index 0000000..78115f8
+--- /dev/null
++++ b/mockbuild/Makefile
+@@ -0,0 +1,39 @@
++all:
++	unset CFLAGS CXXFLAGS FFLAGS CFFLAGS CC CXX && \
++	cd .. && \
++	make && \
++	make install && \
++	cp ./config-apl-gcc8.1-gdb8.1 .config && \
++	./ct-ng build
++
++install:
++	mkdir -p $(INSTALLROOT)/usr/bin/
++	mkdir -p $(INSTALLROOT)/usr/share/
++	cd ../builds/xtensa-apl-elf && find . -exec sh -c 'mkdir -p `dirname $(INSTALLROOT)/usr/share/xtensa-apl-elf/{}` && install {} `dirname $(INSTALLROOT)/usr/share/xtensa-apl-elf/{}`' \;
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-addr2line $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-ar $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-as $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-c++filt $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-cc $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-cpp $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-ct-ng.config $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-elfedit $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gcc $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gcc-8.1.0 $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gcc-ar $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gcc-nm $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gcc-ranlib $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gcov $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gcov-dump $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gcov-tool $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-gprof $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-ld $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-ld.bfd $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-nm $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-objcopy $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-objdump $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-ranlib $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-readelf $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-size $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-strings $(INSTALLROOT)/usr/bin/
++	ln -s /usr/share/xtensa-apl-elf/bin/xtensa-apl-elf-strip $(INSTALLROOT)/usr/bin/
+diff --git a/mockbuild/configure b/mockbuild/configure
+new file mode 100755
+index 0000000..4a10b88
+--- /dev/null
++++ b/mockbuild/configure
+@@ -0,0 +1,7 @@
++#!/bin/bash -e
++unset CFLAGS CXXFLAGS FFLAGS CFFLAGS CC CXX
++cd ../
++./bootstrap
++./configure --prefix=`pwd`/_install #install temporary build tools to _install
++mkdir -p .build/tarballs
++cp -f ../../SOURCES/* .build/tarballs/
+diff --git a/scripts/build/companion_libs.sh b/scripts/build/companion_libs.sh
+index 8ef830d..de6b627 100644
+--- a/scripts/build/companion_libs.sh
++++ b/scripts/build/companion_libs.sh
+@@ -1,12 +1,10 @@
+ # Wrapper to build the companion libs facilities
+ 
+ # List all companion tools facilities, and parse their scripts
+-CT_COMP_LIBS_FACILITY_LIST=
+-for f in "${CT_LIB_DIR}/scripts/build/companion_libs/"*.sh; do
+-    _f="$(basename "${f}" .sh)"
+-    _f="${_f#???-}"
+-    . "${f}"
+-    CT_COMP_LIBS_FACILITY_LIST="${CT_COMP_LIBS_FACILITY_LIST} ${_f}"
++CT_COMP_LIBS_FACILITY_LIST=isl
++for f in ${CT_COMP_LIBS_FACILITY_LIST}; do
++    echo "${CT_LIB_DIR}/scripts/build/companion_libs/"*-${f}.sh
++    . "${CT_LIB_DIR}/scripts/build/companion_libs/"*-${f}.sh
+ done
+ 
+ # Download the companion libs facilities
+diff --git a/scripts/crosstool-NG.sh b/scripts/crosstool-NG.sh
+index 486f733..8fa8ed7 100644
+--- a/scripts/crosstool-NG.sh
++++ b/scripts/crosstool-NG.sh
+@@ -625,14 +625,14 @@ if [ -z "${CT_RESTART}" ]; then
+     CT_EndStep
+ 
+     CT_DoStep INFO "Retrieving needed toolchain components' tarballs"
+-    do_companion_tools_get
+-    do_kernel_get
++#    do_companion_tools_get
++#    do_kernel_get
+     do_companion_libs_get
+     do_binutils_get
+     do_cc_get
+     do_libc_get
+-    do_debug_get
+-    do_test_suite_get
++#    do_debug_get
++#    do_test_suite_get
+     CT_EndStep
+ 
+     if [ "${CT_ONLY_DOWNLOAD}" != "y" ]; then
+@@ -642,14 +642,14 @@ if [ -z "${CT_RESTART}" ]; then
+         fi
+ 
+         CT_DoStep INFO "Extracting and patching toolchain components"
+-        do_companion_tools_extract
+-        do_kernel_extract
++#        do_companion_tools_extract
++#        do_kernel_extract
+         do_companion_libs_extract
+         do_binutils_extract
+         do_cc_extract
+         do_libc_extract
+-        do_debug_extract
+-        do_test_suite_extract
++#        do_debug_extract
++#        do_test_suite_extract
+         CT_EndStep
+     fi
+ fi
+-- 
+2.18.0
+

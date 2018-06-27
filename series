@@ -1,0 +1,3 @@
+0001-packages-gdb-8.1-fix-build-and-include-stdint.h.patch
+0002-config-apl-gcc8.1-gdb8.1-and-binutils-2.30.patch
+0003-support-mockbuild.patch

@@ -1,0 +1,33 @@
+# This file contains additional build requirements that did not get
+# picked up automatically. One name per line, no whitespace.
+bison
+flex
+gmp-dev
+libstdc++
+libunwind-dev
+mpc-dev
+mpfr-dev
+pkgconfig(zlib)
+sed
+texinfo
+dejagnu
+expect
+autogen
+guile
+tcl
+valgrind-dev
+libxml2-dev
+libxslt
+graphviz
+gdb-dev
+procps-ng
+glibc-libc32
+glibc-dev32
+docbook-xml docbook-utils doxygen
+help2man
+ncurses ncurses-dev ncurses-lib
+bzip2
+glibc-staticdev
+gperf
+gzip
+tar
